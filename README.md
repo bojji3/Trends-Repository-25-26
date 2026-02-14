@@ -8,8 +8,8 @@ College Must-Haves – Essential items I can't survive college without
 Daily Routine – My schedule from morning to evening
 Hobbies & Interests – Games, music, food, series, sports, and more
 
-Additional Info – Work experience, certifications, and seminars attended
-Interactive Button – JavaScript-powered surprise message
+    Additional Info – Work experience, certifications, and seminars attended
+    Interactive Button – JavaScript-powered surprise message
 
 🛠️ Technologies Used
     HTML5

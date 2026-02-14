@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MY ULTIMATE COLLEGE LIFE WEBPAGE </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      line-height: 1.6;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body.light {
+      --bg-primary: #f0f5fe;
+      --bg-secondary: #ffffff;
+      --text-primary: #0b1c2f;
+      --text-secondary: #2c3e50;
+      --border-color: #bdd3f0;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: #3a7ca5;
+      --tag-bg: #d4e2fc;
+      --tag-border: #5f9ea0;
+      --accent: #0077be;
+      --accent-glow: rgba(0, 119, 190, 0.3);
+      --hover-shadow: rgba(0, 100, 200, 0.2);
+      --btn-bg: #0b1c2f;
+      --btn-text: #ffffff;
+      --neon-blue: #00a6ff;
+      --neon-purple: #b200ff;
+      --overlay-bg: rgba(255, 255, 255, 0.7);
+    }
+
+    body.dark {
+      --bg-primary: #030614;
+      --bg-secondary: #0f172a;
+      --text-primary: #e2e9ff;
+      --text-secondary: #a5c0e0;
+      --border-color: #2a3f5e;
+      --card-bg: rgba(15, 23, 42, 0.85);
+      --card-border: #4f7fff;
+      --tag-bg: #1a2b3f;
+      --tag-border: #5f8aff;
+      --accent: #6d94ff;
+      --accent-glow: rgba(109, 148, 255, 0.3);
+      --hover-shadow: rgba(100, 150, 255, 0.2);
+      --btn-bg: #e2e9ff;
+      --btn-text: #030614;
+      --neon-blue: #4f7fff;
+      --neon-purple: #b794ff;
+      --overlay-bg: rgba(15, 23, 42, 0.75);
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 1000;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--neon-blue);
+      border-radius: 60px;
+      padding: 0.8rem 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 500;
+      box-shadow: 0 0 20px var(--neon-blue);
+      transition: all 0.2s ease;
+      color: var(--text-primary);
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px var(--neon-purple);
+      border-color: var(--neon-purple);
+    }
+
+    #three-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      margin-bottom: 5rem;
+      border-bottom: 2px solid var(--neon-blue);
+      padding-bottom: 2rem;
+      position: relative;
+      background: var(--overlay-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 2rem 2rem 0 0;
+      padding: 2rem;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 30%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      filter: blur(4px);
+    }
+
+    .title {
+      font-size: 4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--text-primary), var(--neon-blue), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: titleFloat 6s infinite alternate ease-in-out;
+      text-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    @keyframes titleFloat {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-5px) scale(1.02); }
+    }
+
+    .subtitle {
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: var(--text-primary);
+      max-width: 700px;
+    }
+
+    .name-badge {
+      display: inline-block;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--neon-purple);
+      padding: 0.5rem 2rem;
+      border-radius: 40px;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-top: 1rem;
+      box-shadow: 0 0 20px var(--neon-purple);
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 4rem;
+      margin-bottom: 5rem;
+      align-items: center;
+      background: var(--overlay-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 3rem;
+      padding: 2.5rem;
+      border: 2px solid var(--neon-blue);
+    }
+
+    .profile-image {
+      width: 100%;
+      aspect-ratio: 1/1;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6rem;
+      color: var(--neon-blue);
+      border: 3px solid var(--neon-blue);
+      box-shadow: 0 0 50px var(--neon-blue);
+      animation: morphBlob 8s infinite alternate ease-in-out;
+    }
+
+    @keyframes morphBlob {
+      0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+      25% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; }
+      50% { border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%; }
+      75% { border-radius: 40% 60% 60% 40% / 60% 40% 60% 40%; }
+      100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    }
+
+    .intro-text h2 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--text-primary), var(--neon-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .intro-text p {
+      font-size: 1.3rem;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .tag {
+      background: var(--tag-bg);
+      backdrop-filter: blur(5px);
+      border: 2px solid var(--neon-blue);
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .tag:hover {
+      border-color: var(--neon-purple);
+      box-shadow: 0 0 20px var(--neon-purple);
+      transform: scale(1.05);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      margin: 4rem 0;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 2rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--card-border);
+      border-radius: 24px;
+      transition: all 0.3s ease;
+      animation: statAppear 0.6s ease-out forwards;
+      opacity: 0;
+      transform: translateY(20px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-item::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+      border-radius: 24px;
+      z-index: -2;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .stat-item:hover::before {
+      opacity: 0.3;
+    }
+
+    .stat-item:nth-child(1) { animation-delay: 0.1s; }
+    .stat-item:nth-child(2) { animation-delay: 0.2s; }
+    .stat-item:nth-child(3) { animation-delay: 0.3s; }
+    .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes statAppear {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stat-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    .stat-number {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--neon-blue);
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px var(--neon-blue);
+    }
+
+    .stat-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .stat-description {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      margin-top: 0.5rem;
+      font-weight: 500;
+    }
+
+    .section-header {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin: 3rem 0 2rem;
+      border-left: 6px solid var(--neon-blue);
+      padding-left: 1.5rem;
+      text-shadow: 0 0 10px var(--neon-blue);
+      background: var(--overlay-bg);
+      backdrop-filter: blur(10px);
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      display: inline-block;
+      width: auto;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      animation: cardAppear 0.5s ease-out forwards;
+      opacity: 0;
+      transform: translateY(20px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .card:hover::after {
+      left: 100%;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes cardAppear {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 30px var(--accent-glow);
+      border-color: var(--neon-purple);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      color: var(--neon-blue);
+      margin-bottom: 1.5rem;
+      animation: iconPulse 2s infinite alternate;
+    }
+
+    @keyframes iconPulse {
+      from { filter: drop-shadow(0 0 5px var(--neon-blue)); }
+      to { filter: drop-shadow(0 0 20px var(--neon-purple)); }
+    }
+
+    .card h3 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .card p, .card li {
+      color: var(--text-primary);
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .poem-block {
+      background: var(--card-bg);
+      backdrop-filter: blur(5px);
+      border-left: 6px solid var(--neon-purple);
+      padding: 1.5rem;
+      font-style: italic;
+      color: var(--text-primary);
+      margin: 1.5rem 0;
+      border-radius: 0 12px 12px 0;
+      position: relative;
+      overflow: hidden;
+      font-weight: 500;
+    }
+
+    .poem-block::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(109, 148, 255, 0.1), transparent);
+      animation: scanline 4s linear infinite;
+    }
+
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    .interactive-area {
+      text-align: center;
+      margin: 4rem 0;
+      padding: 3rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 48px;
+      border: 2px solid var(--neon-blue);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .interactive-area::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, var(--neon-blue) 0%, transparent 70%);
+      opacity: 0.1;
+      animation: rotateGlow 10s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes rotateGlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .command-terminal {
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid var(--neon-blue);
+      border-radius: 32px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+      box-shadow: 0 0 30px var(--neon-blue);
+    }
+
+    .terminal-header {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--neon-blue);
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--neon-blue);
+      box-shadow: 0 0 10px var(--neon-blue);
+    }
+
+    .terminal-dot:nth-child(2) { background: var(--neon-purple); box-shadow: 0 0 10px var(--neon-purple); }
+    .terminal-dot:nth-child(3) { background: #ffaa44; box-shadow: 0 0 10px #ffaa44; }
+
+    .terminal-prompt {
+      font-family: 'Space Grotesk', monospace;
+      color: var(--text-primary);
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .terminal-prompt span {
+      color: var(--neon-blue);
+      font-weight: 600;
+    }
+
+    .terminal-output {
+      min-height: 80px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      font-size: 1.2rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--neon-purple);
+      transition: all 0.3s ease;
+    }
+
+    .voice-wave {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      height: 40px;
+      margin-top: 1rem;
+    }
+
+    .wave-bar {
+      width: 8px;
+      height: 20px;
+      background: var(--neon-blue);
+      border-radius: 4px;
+      animation: wave 1s ease-in-out infinite;
+    }
+
+    .wave-bar:nth-child(2) { animation-delay: 0.2s; background: var(--neon-purple); }
+    .wave-bar:nth-child(3) { animation-delay: 0.4s; background: #ffaa44; }
+    .wave-bar:nth-child(4) { animation-delay: 0.6s; background: var(--neon-blue); }
+    .wave-bar:nth-child(5) { animation-delay: 0.8s; background: var(--neon-purple); }
+
+    @keyframes wave {
+      0%, 100% { height: 20px; }
+      50% { height: 40px; }
+    }
+
+    .command-history {
+      margin-top: 1rem;
+      text-align: left;
+      max-height: 100px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      background: rgba(0,0,0,0.2);
+      border-radius: 16px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .history-item {
+      padding: 0.3rem;
+      border-left: 2px solid var(--neon-blue);
+      margin-bottom: 0.3rem;
+    }
+
+    .btn-creative {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      perspective: 1000px;
+    }
+
+    .btn-creative:hover .btn-inner {
+      transform: rotateX(15deg) translateY(-5px);
+    }
+
+    .btn-inner {
+      background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+      color: white;
+      padding: 1.5rem 3rem;
+      border-radius: 60px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 20px 30px rgba(0,0,0,0.3);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .btn-inner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-creative:hover .btn-inner::before {
+      left: 100%;
+    }
+
+    .btn-icon {
+      font-size: 2rem;
+      animation: iconWobble 2s infinite alternate;
+    }
+
+    @keyframes iconWobble {
+      from { transform: rotate(-5deg) scale(1); }
+      to { transform: rotate(5deg) scale(1.2); }
+    }
+
+    .footer {
+      margin-top: 5rem;
+      padding: 2rem;
+      border-top: 2px solid var(--neon-blue);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-primary);
+      font-size: 1rem;
+      background: var(--overlay-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .profile-grid, .stats-grid, .card-grid, .two-column {
+        grid-template-columns: 1fr;
+      }
+      
+      .title {
+        font-size: 2.8rem;
+      }
+
+      .theme-toggle {
+        top: 1rem;
+        right: 1rem;
+      }
+    }
+  </style>
+</head>
+<body class="dark">
+  
+  <div class="theme-toggle" id="themeToggle">
+    <i class="fas fa-sun" id="themeIcon"></i>
+    <span id="themeText">CYBER MODE</span>
+  </div>
+
+  <canvas id="three-canvas"></canvas>
+
+  <div class="container">
+    <div class="header">
+      <div class="title">MY ULIMATE COLLEGE LIFE WEBPAGE</div>
+      <div class="subtitle">>_ CS major · poet · badminton player · Yellowjackets theorist</div>
+      <div class="name-badge"><i class="fas fa-crown"></i> ADMIN ACCESS: KRISTINA VISAYA</div>
+    </div>
+
+    <div class="profile-grid">
+      <div class="profile-image">
+        <i class="fas fa-user-astronaut"></i>
+      </div>
+      <div class="intro-text">
+        <h2>KRISTINA VISAYA // SYSTEM OPERATOR</h2>
+        <p>Third-year CS student with root access to poetry and prose. I debug code and human emotions with equal precision. When not in the matrix, you'll find me on the badminton court or analyzing Yellowjackets frame by frame.</p>
+        <div class="tags">
+          <span class="tag"><i class="fas fa-code"></i> PYTHON/JAVA</span>
+          <span class="tag"><i class="fas fa-feather"></i> POETRY</span>
+          <span class="tag"><i class="fas fa-badminton"></i> BADMINTON</span>
+          <span class="tag"><i class="fas fa-tv"></i> YELLOWJACKETS</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">+167%</div>
+        <div class="stat-label">CREATIVITY BOOST</div>
+        <div class="stat-description">when code meets poetry</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">SYSTEM UPTIME</div>
+        <div class="stat-description">caffeine-powered debugging</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">PROSE LINES</div>
+        <div class="stat-description">written in notebooks</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">1.9k</div>
+        <div class="stat-label">SMASHES</div>
+        <div class="stat-description">badminton career total</div>
+      </div>
+    </div>
+
+    <h2 class="section-header">>_ ESSENTIALS.EXE</h2>
+    <div class="two-column">
+      <div class="card">
+        <div class="card-icon"><i class="fas fa-microchip"></i></div>
+        <h3>CORE MUST-HAVES</h3>
+        <ul style="list-style-type: none; padding: 0;">
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-laptop"></i> HUAWEI D15 2022 · 16GB</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-headphones"></i> Sony XM5 · neural link ready</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-keyboard"></i> Wooting 60HE · analog</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-mug-hot"></i> Ember mug · 57°C optimal</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-book"></i> Moleskine · encrypted prose</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-badminton"></i> Yonex Nanoflare · carbon fiber</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-icon"><i class="fas fa-clock"></i></div>
+        <h3>SYSTEM SCHEDULE</h3>
+        <ol style="list-style-type: none; padding: 0;">
+          <li style="margin-bottom: 0.8rem;"><span style="color: var(--neon-blue);">06:30</span> – badminton.exe</li>
+          <li style="margin-bottom: 0.8rem;"><span style="color: var(--neon-blue);">09:00</span> – algorithms · DP</li>
+          <li style="margin-bottom: 0.8rem;"><span style="color: var(--neon-blue);">12:30</span> – hackathon mode</li>
+          <li style="margin-bottom: 0.8rem;"><span style="color: var(--neon-blue);">15:30</span> – music + prose</li>
+          <li style="margin-bottom: 0.8rem;"><span style="color: var(--neon-blue);">18:00</span> – writing sprint</li>
+          <li style="margin-bottom: 0.8rem;"><span style="color: var(--neon-blue);">20:30</span> – Yellowjackets</li>
+          <li style="margin-bottom: 0.8rem;"><span style="color: var(--neon-blue);">23:30</span> – read/journal</li>
+        </ol>
+      </div>
+    </div>
+
+    <h2 class="section-header">>_ INTERESTS.LOG</h2>
+    <div class="two-column">
+      <div class="card">
+        <div class="card-icon"><i class="fas fa-heart"></i></div>
+        <h3>USER INTERESTS</h3>
+        <ul style="list-style-type: none; padding: 0;">
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-badminton"></i> <b>Badminton</b> · rank: Diamond</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-music"></i> <b>Music</b> · indie, bedroom pop</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-tv"></i> <b>Yellowjackets</b> · theorist · team Lottie</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-film"></i> <b>Movies</b> · A24, horror</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-utensils"></i> <b>Food</b> · ramen, tacos</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-feather"></i> <b>Writing</b> · chapbook WIP</li>
+        </ul>
+        
+        <div class="poem-block">
+          <i class="fas fa-quote-left"></i> shuttlecock arcs like a half-formed line,<br>
+          the yellowjacket hums in the debugger.<br>
+          <span style="color: var(--neon-blue);">// kristina.exe v2.0</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon"><i class="fas fa-briefcase"></i></div>
+        <h3>CREDENTIALS.DB</h3>
+        <ul style="list-style-type: none; padding: 0;">
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-laptop"></i> <b>Intern</b> @ DDA · data analytics</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-certificate"></i> Cisco NDG Linux</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-certificate"></i> Google Cybersecurity</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-microphone"></i> “Python for Beginners”</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-users"></i> Cisco Networking</li>
+          <li style="margin-bottom: 0.8rem;"><i class="fas fa-hands-helping"></i> NEXYS Flood Ecosystem Startup</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="interactive-area">
+      <div class="command-terminal">
+        <div class="terminal-header">
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+        </div>
+        <div class="terminal-prompt">
+          <span>KRISTINA@CYBERFOLIO:~$</span> ./inspire --mode=creative
+        </div>
+        <div class="terminal-output" id="terminalOutput">
+          >_ Ready to receive command...
+        </div>
+        
+        <div class="voice-wave" id="voiceWave" style="opacity: 0.3;">
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+        </div>
+
+        <div class="command-history" id="commandHistory">
+          <div class="history-item">>_ System initialized</div>
+          <div class="history-item">>_ Ready for input</div>
+        </div>
+      </div>
+
+      <button class="btn-creative" id="creativeBtn">
+        <div class="btn-inner">
+          <i class="fas fa-bolt btn-icon"></i>
+          EXECUTE COMMAND
+          <i class="fas fa-terminal btn-icon"></i>
+        </div>
+      </button>
+    </div>
+
+    <div class="footer">
+      <div>© 2026 KRISTINA VISAYA // v2.0.1</div>
+      <div>
+        <i class="fas fa-microchip"></i>
+        <i class="fas fa-feather"></i>
+        <i class="fas fa-badminton"></i>
+      </div>
+      <div><i>&lt;tech/&gt; &lt;poetry/&gt; &lt;future/&gt;</i></div>
+    </div>
+  </div>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    const body = document.body;
+
+    themeToggle.addEventListener('click', () => {
+      if (body.classList.contains('dark')) {
+        body.classList.remove('dark');
+        body.classList.add('light');
+        themeIcon.className = 'fas fa-moon';
+        themeText.textContent = 'NIGHT MODE';
+      } else {
+        body.classList.remove('light');
+        body.classList.add('dark');
+        themeIcon.className = 'fas fa-sun';
+        themeText.textContent = 'CYBER MODE';
+      }
+    });
+
+    const creativeBtn = document.getElementById('creativeBtn');
+    const terminalOutput = document.getElementById('terminalOutput');
+    const voiceWave = document.getElementById('voiceWave');
+    const commandHistory = document.getElementById('commandHistory');
+
+    const commandCategories = {
+      badminton: [
+        "🏸 EXECUTING: badminton_smash.exe — power: 98% | angle: optimal | 'The shuttlecock never lies.'",
+        "🏸 COMMAND: footwork_calibration — agility +15 | 'A smash is just a poem with velocity.'",
+        "🏸 SYSTEM: backhand_drive — accuracy: 94% | 'Relax your grip before the kill.'"
+      ],
+      yellowjackets: [
+        "🐝 YELLOWJACKETS PROTOCOL: analyzing episode s2e7 — masterpiece detected | 'The wilderness is not a place, it's a feeling.'",
+        "🐝 CONSPIRACY MODE: team Lottie — conviction +20 | 'Antler queen energy: debug with grace.'",
+        "🐝 REWATCH SEQUENCE: 'Doomcoming' — iconic status confirmed | 'She's not running from the darkness...'"
+      ],
+      poetry: [
+        "✍️ PROSE ENGINE: generating line — 'shuttlecock arcs like a half-formed line' | quality: evocative",
+        "✍️ POETRY COMPILER: chapbook.exe — progress: 47% | 'Write a line today. Even three words.'",
+        "✍️ LYRICAL PROCESSOR: metaphor density — high | 'the yellowjacket hums in the debugger'"
+      ],
+      music: [
+        "🎧 AUDIO INTERFACE: loading playlist — Clairo, Mitski, Weyes Blood | mood: reflective",
+        "🎧 SOUND WAVES: bedroom pop detected | 'Music to write to: lo-fi, indie, film scores'",
+        "🎧 FREQUENCY ANALYSIS: harmonic convergence | 'The right song can debug any emotion'"
+      ],
+      system: [
+        "💻 KERNEL MESSAGE: creativity boost — +167% when code meets poetry",
+        "💻 SYSTEM STATUS: caffeine level — 27% | uptime: 24/7",
+        "💻 EXECUTING: kristina.exe — version 2.0.1 | 'You're the main character of your own code.'",
+        "💻 DEBUG MODE: human emotions — successfully parsed | 'Root access to prose granted.'"
+      ]
+    };
+
+    let history = [
+      ">_ System initialized",
+      ">_ Ready for input"
+    ];
+
+    function updateHistory(command) {
+      history.push(command);
+      if (history.length > 5) history.shift();
+      
+      commandHistory.innerHTML = history.map(cmd => 
+        `<div class="history-item">>_ ${cmd}</div>`
+      ).join('');
+    }
+
+    creativeBtn.addEventListener('click', () => {
+      const categories = Object.keys(commandCategories);
+      const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+      const messages = commandCategories[randomCategory];
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      
+      terminalOutput.style.opacity = '0.5';
+      setTimeout(() => {
+        terminalOutput.innerHTML = `>_ ${randomMessage}`;
+        terminalOutput.style.opacity = '1';
+      }, 150);
+
+      updateHistory(randomMessage.substring(0, 40) + '...');
+
+      voiceWave.style.opacity = '1';
+      voiceWave.style.transition = 'opacity 0.3s';
+      
+      creativeBtn.style.transform = 'scale(0.98)';
+      setTimeout(() => {
+        creativeBtn.style.transform = 'scale(1)';
+      }, 150);
+
+      const terminal = document.querySelector('.command-terminal');
+      terminal.style.borderColor = 'var(--neon-purple)';
+      terminal.style.boxShadow = '0 0 50px var(--neon-purple)';
+      setTimeout(() => {
+        terminal.style.borderColor = 'var(--neon-blue)';
+        terminal.style.boxShadow = '0 0 30px var(--neon-blue)';
+      }, 300);
+
+      if (Math.random() < 0.2) {
+        const alertMessages = [
+          "🔮 SYSTEM ORACLE: The shuttlecock foretells great poetry!",
+          "⚡ KERNEL PANIC: Too much creativity in one place!",
+          "🎯 ACHIEVEMENT UNLOCKED: Badminton + Poetry synergy!",
+          "🌟 EASTER EGG FOUND: You've discovered a hidden stanza!",
+        ];
+        alert('✨ ' + alertMessages[Math.floor(Math.random() * alertMessages.length)] + ' ✨');
+      }
+
+      setTimeout(() => {
+        voiceWave.style.opacity = '0.3';
+      }, 800);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'i' || e.key === 'I') {
+        creativeBtn.click();
+        terminalOutput.innerHTML = '>_ Keyboard shortcut activated [I]';
+        terminalOutput.style.backgroundColor = 'rgba(79, 127, 255, 0.2)';
+        setTimeout(() => {
+          terminalOutput.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+        }, 200);
+      }
+    });
+
+    (function initThree() {
+      const canvas = document.getElementById('three-canvas');
+      
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x030614);
+
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 25;
+      camera.position.y = 5;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+
+      const ambientLight = new THREE.AmbientLight(0x404060);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      dirLight.position.set(2, 3, 4);
+      scene.add(dirLight);
+
+      const pointLight1 = new THREE.PointLight(0x4f7fff, 1, 30);
+      pointLight1.position.set(5, 5, 5);
+      scene.add(pointLight1);
+
+      const pointLight2 = new THREE.PointLight(0xb794ff, 0.8, 30);
+      pointLight2.position.set(-5, -2, 5);
+      scene.add(pointLight2);
+
+      const shapes = [];
+      
+      const shuttleGroup = new THREE.Group();
+      const coneGeo = new THREE.ConeGeometry(0.5, 2, 16);
+      const coneMat = new THREE.MeshPhongMaterial({ color: 0xffaa44, emissive: 0x442200 });
+      const cone = new THREE.Mesh(coneGeo, coneMat);
+      cone.position.y = 1;
+      shuttleGroup.add(cone);
+      
+      const sphereGeo = new THREE.SphereGeometry(0.4, 16);
+      const sphereMat = new THREE.MeshPhongMaterial({ color: 0xff6600, emissive: 0x221100 });
+      const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+      sphere.position.y = -0.5;
+      shuttleGroup.add(sphere);
+      
+      shuttleGroup.position.set(8, 3, -5);
+      scene.add(shuttleGroup);
+      shapes.push(shuttleGroup);
+
+      for (let i = 0; i < 3; i++) {
+        const laptopGroup = new THREE.Group();
+        
+        const baseGeo = new THREE.BoxGeometry(2, 0.2, 1.5);
+        const baseMat = new THREE.MeshPhongMaterial({ color: 0x333333, emissive: 0x111111 });
+        const base = new THREE.Mesh(baseGeo, baseMat);
+        base.position.y = 0;
+        laptopGroup.add(base);
+        
+        const screenGeo = new THREE.BoxGeometry(1.8, 1.2, 0.1);
+        const screenMat = new THREE.MeshPhongMaterial({ color: 0x4f7fff, emissive: 0x112244 });
+        const screen = new THREE.Mesh(screenGeo, screenMat);
+        screen.position.y = 0.7;
+        screen.position.z = -0.2;
+        screen.rotation.x = -0.2;
+        laptopGroup.add(screen);
+        
+        laptopGroup.position.set(-5 + i * 5, 1 + i * 2, -8 + i * 3);
+        laptopGroup.rotation.y = i * 0.5;
+        scene.add(laptopGroup);
+        shapes.push(laptopGroup);
+      }
+
+      for (let i = 0; i < 4; i++) {
+        const bookGroup = new THREE.Group();
+        
+        const pagesGeo = new THREE.BoxGeometry(0.8, 0.4, 1.2);
+        const pagesMat = new THREE.MeshPhongMaterial({ color: 0x88aaff, emissive: 0x112233 });
+        const pages = new THREE.Mesh(pagesGeo, pagesMat);
+        bookGroup.add(pages);
+        
+        const coverGeo = new THREE.BoxGeometry(0.9, 0.1, 1.3);
+        const coverMat = new THREE.MeshPhongMaterial({ color: 0xffaa66, emissive: 0x331100 });
+        const cover = new THREE.Mesh(coverGeo, coverMat);
+        cover.position.y = 0.25;
+        bookGroup.add(cover);
+        
+        bookGroup.position.set(3 + i * 2, 0.5 + i * 1.5, -10 + i * 2);
+        bookGroup.rotation.y = i * 0.3;
+        bookGroup.rotation.z = i * 0.1;
+        scene.add(bookGroup);
+        shapes.push(bookGroup);
+      }
+
+      for (let i = 0; i < 3; i++) {
+        const tvGroup = new THREE.Group();
+        
+        const bodyGeo = new THREE.BoxGeometry(2, 1.5, 0.5);
+        const bodyMat = new THREE.MeshPhongMaterial({ color: 0x222222, emissive: 0x111111 });
+        const body = new THREE.Mesh(bodyGeo, bodyMat);
+        tvGroup.add(body);
+        
+        const screenGeo = new THREE.BoxGeometry(1.6, 1.1, 0.1);
+        const screenMat = new THREE.MeshPhongMaterial({ color: 0x88aaff, emissive: 0x224466 });
+        const screen = new THREE.Mesh(screenGeo, screenMat);
+        screen.position.z = 0.3;
+        tvGroup.add(screen);
+        
+        tvGroup.position.set(-3 + i * 4, 1.5, -12 - i * 2);
+        scene.add(tvGroup);
+        shapes.push(tvGroup);
+      }
+
+      const lineMaterial = new THREE.LineBasicMaterial({ color: 0x4f7fff });
+      
+      for (let j = 0; j < 5; j++) {
+        const points = [];
+        for (let i = 0; i < 20; i++) {
+          points.push(new THREE.Vector3(
+            (Math.random() - 0.5) * 40,
+            (Math.random() - 0.5) * 30,
+            (Math.random() - 0.5) * 30
+          ));
+        }
+        const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+        const line = new THREE.Line(lineGeo, lineMaterial);
+        scene.add(line);
+      }
+
+      const particleGeo = new THREE.BufferGeometry();
+      const particleCount = 2000;
+      const positions = new Float32Array(particleCount * 3);
+      const colors = new Float32Array(particleCount * 3);
+
+      for (let i = 0; i < particleCount; i++) {
+        const r = 15 + Math.random() * 25;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        
+        positions[i*3] = Math.sin(phi) * Math.cos(theta) * r;
+        positions[i*3+1] = Math.sin(phi) * Math.sin(theta) * r * 0.3;
+        positions[i*3+2] = Math.cos(phi) * r;
+        
+        colors[i*3] = 0.2 + Math.random() * 0.8;
+        colors[i*3+1] = 0.3 + Math.random() * 0.7;
+        colors[i*3+2] = 0.8 + Math.random() * 0.4;
+      }
+
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const particleMat = new THREE.PointsMaterial({
+        size: 0.15,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.6,
+        blending: THREE.AdditiveBlending
+      });
+
+      const particles = new THREE.Points(particleGeo, particleMat);
+      scene.add(particles);
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        scene.rotation.y += 0.0005;
+        scene.rotation.x += 0.0002;
+
+        shapes.forEach((mesh, index) => {
+          mesh.rotation.x += 0.005;
+          mesh.rotation.y += 0.008;
+          mesh.rotation.z += 0.003;
+          mesh.position.y += Math.sin(Date.now() * 0.001 + index) * 0.005;
+        });
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    })();
+  </script>
+</body>
+</html>
